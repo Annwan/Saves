@@ -15,9 +15,12 @@
     You should have received a copy of the GNU General Public License
     along with this module.  If not, see <https://www.gnu.org/licenses/>.
 """
+__all__ = ['SaveManagerBase']
+__version__ = '1.0'
+__author__ = 'Antoine COMBET'
+
 
 import json
-import os
 
 class SaveManagerBase(object):
     """

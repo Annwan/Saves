@@ -17,55 +17,59 @@
 """
 
 import json
+import os
 
 class SaveManagerBase(object):
+    """
+    Base class containing all the functions of the module
+    Usable as this or as base for a more specific save system
+    Keys are always converted to string to match JSON rules
+    """
 
     def __init__(self, save_path, file_indent = None):
+        try:
+            fi = open(save_path,'r')
+            fi.close()
+        except FileNotFoundError:
+            fi = open(save_path, 'w')
+            fi.close()
         self.save_file = save_path
         self.indent = file_indent
 
-    def create_key(self, key_name, key_value=None):
-        save = {}
-        with open(self.save_file, 'r') as fi:
-            save = json.load(fi)
-            
-        if not save.has_key(str(key_name)):
-            save[str(key_name)] = key_value
-            
-        else:
-            raise ValueError("Key already exists")
-            
-        with open(self.save_file, 'w') as fi:
-            json.dump(save, self.save_file, indent=self.indent)
-        
-        return 0
-    
-    def edit_key(self, key_name, key_value=None):
+    def write_key(self, key, value=None):
+        """
+    Changes the value of the key `key` to `value` (`None` by default).
+    If the key `key` doesn't exist, creates and assign it to `value`.
+    Returns `value`
+        """
         save={}
         with open(self.save_file, 'r') as fi:
-            save = json.load(fi)
+            try:
+                save = json.load(fi)
+            except:
+                pass
+                
             
-        if save.has_key(str(key_name)):
-            save[str(key_name)] = key_value
-            
-        else:
-            raise ValueError("Key doesn't exists")
-            
+        save[str(key)] = value
         with open(self.save_file, 'w') as fi:
             json.dump(save, fi, indent=self.indent)
             
-        return 0
+        return value
         
-    def get_value(self, key_name):
+    def get_value(self, key):
+        """
+    Returns the value stored at the key `key`
+    If the key `key` doesn't exist, raises ValueError
+        """
         save={}
         with open(self.save_file, 'r') as fi:
             save = json.load(fi)
             
-        if save.has_key(str(key_name)):
-            return save[str(key_name)]
+        if str(key) in save.keys():
+            return save[str(key)]
             
         else:
-            raise ValueError("Key doesn't exists")
+            raise ValueError("Key '" + str(key) + "' doesn't exist")
             
     def set_save_file(self, new_save):
         self.save_file = new_save

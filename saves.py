@@ -25,7 +25,7 @@ import json
 class SaveManagerBase(object):
     """
     Base class containing all the functions of the module
-    Usable as this or as base for a more specific save system
+    Usable as it or as base for a more specific save system
     Keys are always converted to string to match JSON rules
     """
 
@@ -73,6 +73,17 @@ class SaveManagerBase(object):
             
         else:
             raise ValueError("Key '" + str(key) + "' doesn't exist")
+            
+    def create_empty_save(self, path, switch=True):
+        """
+        Create a new JSON file, ready for usage
+        Raise an exception if the file already exists
+        """
+        fi = open(path, "x")
+        fi.write('{\n}')
+        if switch:
+            self.set_save_file(path)
+        fi.close()
             
     def set_save_file(self, new_save):
         self.save_file = new_save
